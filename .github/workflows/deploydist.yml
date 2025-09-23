@@ -1,0 +1,12 @@
+name: Deploy Dist folder
+on: [push]
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Get code
+        run: |
+          echo "Cloning the repository"
+          echo "${{toJson(github)}}"
+          git clone https://github.com/${{github.repository}}.git myrepo
+          cd myrepo && ls
