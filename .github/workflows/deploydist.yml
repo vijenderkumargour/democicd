@@ -5,8 +5,21 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Get code
-        run: |
-          echo "Cloning the repository"
-          echo "${{toJson(github)}}"
-          git clone https://github.com/${{github.repository}}.git myrepo
-          cd myrepo && ls
+        uses: actions/checkout@v5
+        # run: |
+        #   echo "Cloning the repository"
+        #   echo "${{toJson(github)}}"
+        #   git clone https://github.com/${{github.repository}}.git myrepo
+        #   cd myrepo && ls
+      - name: setup node js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: print node version
+        run: node -v
+      - name: install dependencies
+        run: npm install
+      - name: Run tests
+        run: npm test -- --watchAll=false
+      - name: Complete job
+        run: echo "All steps completed successfully"
