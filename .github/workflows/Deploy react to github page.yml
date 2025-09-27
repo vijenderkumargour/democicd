@@ -1,18 +1,18 @@
 name: Deploy on github pages
-#on: [push]
-on:
-  push:
-    branches:
-      - main
-      - "feature/*"
-    paths-ignore:
-      - README.md
-      - "**.yml"
-      - "**.md"
-      - "**.txt"
-      - "**.json"
-      - "**.xml"
-      - "**.yaml"
+on: [push]
+# on:
+#   push:
+#     branches:
+#       - main
+#       - "feature/*"
+#     paths-ignore:
+#       - README.md
+#       - "**.yml"
+#       - "**.md"
+#       - "**.txt"
+#       - "**.json"
+#       - "**.xml"
+#       - "**.yaml"
 jobs:
   Test:
     runs-on: ubuntu-latest
