@@ -15,9 +15,15 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 22
-      - name: print node version
-        run: node -v
+      - name: Cache dependencies
+        id: cache
+        uses: actions/cache@v3
+        with:
+          path: node_modules
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+
       - name: install dependencies
+        if: steps.cache.outputs.cache-hit != 'true'
         run: npm install
       - name: Run tests
         run: npm test -- --watchAll=false
@@ -33,7 +39,15 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 22
+      - name: Cache dependencies
+        id: cache
+        uses: actions/cache@v3
+        with:
+          path: node_modules
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+
       - name: install dependencies
+        if: steps.cache.outputs.cache-hit != 'true'
         run: npm install
       - name: Build the app
         run: npm run build
