@@ -1,19 +1,18 @@
 name: Deploy Dist folder
 #on: [push]
-# on:
-#   push:
-#     branches:
-#       - main
-#       - "feature/*"
-#     paths-ignore:
-#       - README.md
-#       - "**.yml"
-#       - "**.md"
-#       - "**.txt"
-#       - "**.json"
-#       - "**.xml"
-#       - "**.yaml"
-on: workflow_dispatch
+on:
+  push:
+    branches:
+      - main
+      - "feature/*"
+    paths-ignore:
+      - README.md
+      - "**.yml"
+      - "**.md"
+      - "**.txt"
+      - "**.json"
+      - "**.xml"
+      - "**.yaml"
 jobs:
   Test:
     runs-on: ubuntu-latest
@@ -43,7 +42,7 @@ jobs:
         run: npm test -- --watchAll=false
       - name: Complete job
         run: echo "All steps completed successfully"
-  Build:
+  build:
     runs-on: ubuntu-latest
     needs: Test
     steps:
@@ -65,22 +64,31 @@ jobs:
         run: npm install
       - name: Build the app
         run: npm run build
-      - name: Upload artifact
-        uses: actions/upload-artifact@v4
+      - name: Upload static files as artifact
+        uses: actions/upload-pages-artifact@v3 # or specific "vX.X.X" version tag for this action
         with:
-          name: dist-folder
+          name: github-pages
           path: build
   deploy:
     runs-on: ubuntu-latest
-    needs: Build
+    # Add a dependency to the build job
+    needs: build
+
+    # Grant GITHUB_TOKEN the permissions required to make a Pages deployment
+    permissions:
+      pages: write # to deploy to Pages
+      id-token: write # to verify the deployment originates from an appropriate source
+
+    # Deploy to the github-pages environment
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
+    # Specify runner + deployment step
+
     steps:
-      - name: Download artifact
-        uses: actions/download-artifact@v4
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4 # or specific "vX.X.X" version tag for this action
         with:
-          name: dist-folder
-          path: build
-      - name: Deploy to server
-        run: |
-          echo "deploy below path"
-          ls build
-          echo "Deploying to server..."
+          token: ${{ secrets.GITHUB_TOKEN }}
