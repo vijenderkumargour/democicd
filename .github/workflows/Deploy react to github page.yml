@@ -1,4 +1,4 @@
-name: Deploy Dist folder
+name: Deploy on github pages
 #on: [push]
 on:
   push:
